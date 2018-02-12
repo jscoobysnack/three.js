@@ -13,6 +13,7 @@ import { WebGLBackground } from './webgl/WebGLBackground.js';
 import { WebGLRenderLists } from './webgl/WebGLRenderLists.js';
 import { WebGLMorphtargets } from './webgl/WebGLMorphtargets.js';
 import { WebGLIndexedBufferRenderer } from './webgl/WebGLIndexedBufferRenderer.js';
+import { WebGL2IndexedBufferRenderer } from './webgl/WebGL2IndexedBufferRenderer.js';
 import { WebGLBufferRenderer } from './webgl/WebGLBufferRenderer.js';
 import { WebGLGeometries } from './webgl/WebGLGeometries.js';
 import { WebGLObjects } from './webgl/WebGLObjects.js';
@@ -260,6 +261,7 @@ function WebGLRenderer( parameters ) {
 
 	function initGLContext() {
 
+		var _isWebGL2 = ( typeof WebGL2RenderingContext !== 'undefined' && _gl instanceof WebGL2RenderingContext );
 		extensions = new WebGLExtensions( _gl );
 		extensions.get( 'WEBGL_depth_texture' );
 		extensions.get( 'OES_texture_float' );
@@ -291,7 +293,9 @@ function WebGLRenderer( parameters ) {
 		background = new WebGLBackground( _this, state, geometries, _premultipliedAlpha );
 
 		bufferRenderer = new WebGLBufferRenderer( _gl, extensions, _infoRender );
-		indexedBufferRenderer = new WebGLIndexedBufferRenderer( _gl, extensions, _infoRender );
+		indexedBufferRenderer = _isWebGL2 ?
+			new WebGL2IndexedBufferRenderer( _gl, extensions, _infoRender ) : 
+		 	new WebGLIndexedBufferRenderer( _gl, extensions, _infoRender );
 
 		spriteRenderer = new WebGLSpriteRenderer( _this, _gl, state, textures, capabilities );
 
